@@ -42,7 +42,7 @@ if docker images frontend-app | grep -q "frontend-app"; then
   docker container rm frontend-container || true
 
   echo "Removing existing frontend image..."
-  docker system prune
+  docker system prune -y
   docker image rm frontend-app || true
 else
   echo "Frontend image not found."
