@@ -1,7 +1,28 @@
 #!/bin/bash
 
+# Automatically fetch the VM username using whoami
+USERNAME=$(whoami)
+
+# Search for the Aieth folder in the user's home directory
+AIETH_PATH=$(find /home/$USERNAME -type d -name "Aieth" 2>/dev/null)
+
+# Check if Aieth folder is found
+if [ -z "$AIETH_PATH" ]; then
+  echo "Aieth folder not found in home directory."
+  exit 1
+fi
+
+echo "Aieth folder found at: $AIETH_PATH"
+
 # Navigate to the Aieth folder
-cd /home/azureuser/github/Aieth
+cd "$AIETH_PATH"
+
+# Fetch the public IP address of your VM
+VM_IP=$(curl -s https://ifconfig.me)
+
+# Replace localhost with the VM public IP in the App.jsx file before building the image
+echo "Updating App.jsx with VM IP address..."
+sed -i "s|http://localhost:8000|http://$VM_IP:8000|g" frontend/src/App.jsx
 
 # Check and remove the existing frontend image if it exists, then rebuild it
 if docker images frontend-app | grep -q "frontend-app"; then
@@ -52,7 +73,7 @@ docker run -d \
   --name frontend-container \
   --network app-network \
   -p 8080:80 \
-  -e BACKEND_URL=http://backend-container:8000 \
+  -e BACKEND_URL=http://$VM_IP:8000 \
   frontend-app
 
 # Run the backend container
