@@ -3,16 +3,27 @@
 # Automatically fetch the VM username using whoami
 USERNAME=$(whoami)
 
-# Search for the Aieth folder in the user's home directory
-AIETH_PATH=$(find /home/$USERNAME -type d -name "Aieth" 2>/dev/null)
+# Get the current directory where the script is executed
+CURRENT_DIR=$(pwd)
 
-# Check if Aieth folder is found
-if [ -z "$AIETH_PATH" ]; then
-  echo "Aieth folder not found in home directory."
-  exit 1
+# Verify the Aieth directory by checking if we are inside it
+if [ ! -d "$CURRENT_DIR" ] || [ ! -d "$CURRENT_DIR/backend" ] || [ ! -d "$CURRENT_DIR/frontend" ]; then
+  echo "Aieth folder not found in the current directory."
+  echo "Searching for Aieth folder in the home directory..."
+  
+  # Search for the Aieth folder in the user's home directory if not found in the current directory
+  AIETH_PATH=$(find /home/$USERNAME -type d -name "Aieth" 2>/dev/null)
+
+  if [ -z "$AIETH_PATH" ]; then
+    echo "Aieth folder not found in home directory."
+    exit 1
+  fi
+  
+  echo "Aieth folder found at: $AIETH_PATH"
+else
+  AIETH_PATH=$CURRENT_DIR
+  echo "Aieth folder found in the current directory: $AIETH_PATH"
 fi
-
-echo "Aieth folder found at: $AIETH_PATH"
 
 # Navigate to the Aieth folder
 cd "$AIETH_PATH"
