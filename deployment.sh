@@ -10,7 +10,7 @@ CURRENT_DIR=$(pwd)
 if [ ! -d "$CURRENT_DIR" ] || [ ! -d "$CURRENT_DIR/backend" ] || [ ! -d "$CURRENT_DIR/frontend" ]; then
   echo "Aieth folder not found in the current directory."
   echo "Searching for Aieth folder in the home directory..."
-  
+
   # Search for the Aieth folder in the user's home directory if not found in the current directory
   AIETH_PATH=$(find /home/$USERNAME -type d -name "Aieth" 2>/dev/null)
 
@@ -18,7 +18,7 @@ if [ ! -d "$CURRENT_DIR" ] || [ ! -d "$CURRENT_DIR/backend" ] || [ ! -d "$CURREN
     echo "Aieth folder not found in home directory."
     exit 1
   fi
-  
+
   echo "Aieth folder found at: $AIETH_PATH"
 else
   AIETH_PATH=$CURRENT_DIR
